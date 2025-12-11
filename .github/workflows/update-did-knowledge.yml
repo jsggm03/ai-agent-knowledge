@@ -1,0 +1,31 @@
+name: Auto Sync D-ID Knowledge
+
+on:
+  push:
+    paths:
+      - '**/*.txt'
+      - '**/*.md'
+
+jobs:
+  update-knowledge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run sync script
+        env:
+          DID_API_KEY: ${{ secrets.DID_API_KEY }}
+          KNOWLEDGE_ID: ${{ secrets.KNOWLEDGE_ID }}
+          AGENT_ID: ${{ secrets.AGENT_ID }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python update_did.py
